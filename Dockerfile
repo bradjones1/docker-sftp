@@ -25,5 +25,4 @@ ENV CONF_SSH /etc/ssh
 
 EXPOSE 22
 
-ENTRYPOINT ["/entrypoint.sh"]
-CMD ["/usr/sbin/sshd", "-D", "-e"]
+ENTRYPOINT ["/entrypoint.sh", "/usr/sbin/sshd", "-D", "-e"]

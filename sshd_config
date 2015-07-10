@@ -12,7 +12,7 @@ AllowTcpForwarding no
 AuthorizedKeysFile %h/.ssh/authorized_keys
 Banner /etc/banner
 ChallengeResponseAuthentication no
-ChrootDirectory /chroot
+ChrootDirectory /data/sftp/chroot
 ClientAliveInterval 300
 ForceCommand internal-sftp -d %u
 HostKey /etc/ssh/ssh_host_rsa_key
@@ -26,6 +26,6 @@ Protocol 2
 StrictModes yes
 Subsystem sftp internal-sftp
 TCPKeepAlive yes
-UsePAM no
+UsePAM yes
 UsePrivilegeSeparation yes
 X11Forwarding no

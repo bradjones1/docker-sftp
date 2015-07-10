@@ -11,7 +11,7 @@ set -e
 echo -e >&2 '\nRunning helper script ...\n'
 
 : ${SFTP_USER:=sftp1}
-: ${SFTP_UID:=1000}
+: ${SFTP_UID:=2001}
 
 # Edit settings in relevant config files
 set_config() {
@@ -74,7 +74,7 @@ for i in "${users[@]}"; do
 	uid="${uids[n]}"
 	gid="${gids[n]}"
 
-	useraddParams="-M -N -d /$user -s /usr/sbin/nologin"
+	useraddParams="-M -N -d $SFTP_CHROOT/$user -s /usr/sbin/nologin -e 9999-12-31"
 
 	if [ -z "$pass" -o "$pass" == "random" ]; then
 		pass=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 12 | head -n 1 | grep -i '[a-zA-Z0-9]'`
@@ -97,9 +97,15 @@ for i in "${users[@]}"; do
 	userCheck=$(getent passwd $uid > /dev/null; echo $?)
 	if [ $userCheck -ne 0 ]; then
 		useradd $useraddParams "$user"
-		mkdir -p $SFTP_CHROOT/$user
-	fi
+    if [ ! -d $SFTP_CHROOT/$user/.ssh ]; then
+      mkdir -p $SFTP_CHROOT/$user/.ssh
+      touch $SFTP_CHROOT/$user/.ssh/authorized_keys
+      chmod 700 $SFTP_CHROOT/$user/.ssh
+      chown -R $user $SFTP_CHROOT/$user/.ssh
+      chmod 600 $SFTP_CHROOT/$user/.ssh/authorized_keys
+    fi
 
+  # Home directories must be owned by root.
 	chown root:root $SFTP_CHROOT/$user
 	chmod 755 $SFTP_CHROOT/$user
 
