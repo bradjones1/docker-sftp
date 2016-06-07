@@ -97,6 +97,7 @@ for i in "${users[@]}"; do
 	userCheck=$(getent passwd $uid > /dev/null; echo $?)
 	if [ $userCheck -ne 0 ]; then
 		useradd $useraddParams "$user"
+	fi
     if [ ! -d $SFTP_CHROOT/$user/.ssh ]; then
       mkdir -p $SFTP_CHROOT/$user/.ssh
       touch $SFTP_CHROOT/$user/.ssh/authorized_keys
